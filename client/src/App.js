@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {GoogleLogin, GoogleLogout} from 'react-google-login';
 import {gapi} from 'gapi-script';
-import {Card, Col, Row} from 'react-bootstrap';
+import {Card, Col, Row, Table} from 'react-bootstrap';
 
 function App() {
 
@@ -10,6 +10,7 @@ function App() {
   var chatContainer
   let loadInterval  
   const [images, setImages] = useState([]);
+  const [domains, setDomains] = useState('');
   useEffect(() => {
     var Id = "474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
 
@@ -152,6 +153,11 @@ const handleSubmit = async (e) => {
               'Content-Type': `application/json`,
           }}
       ).then( (res) => {
+        const string = res.data.keyword.replace(/[^a-zA-Z]/g, ' ');
+        const newString = string.split(' ');
+        const filter = newString.filter((s) => s != "")
+        console.log(filter);
+        // console.log(string, 'sttttttttttttt')
         chatContainer.innerHTML = chatStripe(false, res.data.keyword)
         console.log("respose from /keywords", res)
         response = res.data.keyword;
@@ -166,23 +172,20 @@ const handleSubmit = async (e) => {
           .then((res) => {
             console.log("respose from logo", res)
             setImages(res.data.image.data);
-            chatContainer.innerHTML += showLogo(res.data.image.data[0].url)
+            // chatContainer.innerHTML += showLogo(res.data.image.data[0].url)
             console.log(res.data)
         })
       }).then((res) =>{
-        axios.get('https://api.ote-godaddy.com/v1/domains',
+        axios.post('http://localhost:5000/domains', JSON.stringify({logo: 'response'}),
         {
          headers: {
              'Content-Type': `application/json`,
-             'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe:2CGjnCYAESzpUcEfWgFcVQ',
-             'Access-Control-Allow-Origin': '*',
-             'Accept': 'application/json'
          },
         }).then((res) => {
-          console.log("respose from domains", res)
-          // chatContainer.innerHTML += showLogo(res.data.image.data[0].url)
+          setDomains(res.data)
           console.log(res.data)
-      })
+          // chatContainer.innerHTML += showLogo(res.data.image.data[0].url)
+        })
     })
 
 
@@ -252,6 +255,34 @@ const logout = () => {
           </Row>
         )
     })
+    }
+    {
+      (domains && domains.length > 0) && 
+        
+      <Table striped bordered hover size="lg">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Availablity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+        domains.map((domain,i) => {
+          return (
+            <tr>
+            <td>{i+1}</td>
+            <td>{domain.domain}</td>
+            <td>{domain.domainId}</td>
+            <td>{domain.status}</td>
+            </tr>
+          )
+        })
+        }
+      </tbody>
+          </Table>
     }
     {/* <GoogleLogin
       clientId={"474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"}

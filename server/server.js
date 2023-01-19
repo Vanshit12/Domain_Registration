@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { Configuration, OpenAIApi } from 'openai';
 import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
 
 dotenv.config()
 const configuration = new Configuration({
@@ -85,25 +86,43 @@ app.post('/logo', async (req, res) => {
     // })
   }
   catch (err) {
-    res.status(500).send(error || 'Something went wrong');
+    res.status(500).send(err || 'Something went wrong');
   }
 })
 
 app.post('/domains', async (req, res) => {
-  try {
-    console.log('ok')
-    const response = await fetch("https://api.ote-godaddy.com/v1/domains", {
-      method: 'GET',
+    axios({
+      url: "https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&limit=5&marker=baby",
+      method: "GET",
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
       }
-    });
-    res.status(200).send({data:response.data})
-
-  }
-  catch (err) {
-    res.status(500).send(error || 'Something went wrong');
-  }
+    })
+      .then(response => {
+        res.status(200).json(response.data);
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json({ message: err });
+      });
 })
+app.get('/domains', async (req, res) => {
+    axios({
+      url: "https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&limit=5&marker=baby",
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+      }
+    })
+      .then(response => {
+        res.status(200).json(response.data);
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json({ message: err });
+      });
+    
+    })
 app.listen(5000, () => console.log('AI server started on http://localhost:5000'))
