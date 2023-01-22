@@ -30,7 +30,7 @@ app.post('/', async (req, res) => {
   try {
     const prompt = req.body.prompt;
 
-    const response = await openai.createCompletion({
+    // const response = await openai.createCompletion({
     //   model: "text-davinci-003",
     //   prompt: `${prompt}`,
     //   temperature: 1, // Higher values means the model will take more risks.
@@ -40,17 +40,17 @@ app.post('/', async (req, res) => {
     //   presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
     // });
 
-      model: "text-davinci-003",
-      prompt: `${prompt}`,
-      temperature: 0.5,
-      max_tokens: 60,
-      top_p: 1.0,
-      frequency_penalty: 0.8,
-      presence_penalty: 0.0,
-    });
+    //   model: "text-davinci-003",
+    //   prompt: `${prompt}`,
+    //   temperature: 0.5,
+    //   max_tokens: 60,
+    //   top_p: 1.0,
+    //   frequency_penalty: 0.8,
+    //   presence_penalty: 0.0,
+    // });
 
     res.status(200).send({
-      keyword: response.data.choices[0].text
+      keyword: 'response.data.choices[0].text'
     });
 
       // res.status(200).send({
@@ -90,23 +90,97 @@ app.post('/logo', async (req, res) => {
   }
 })
 
+// app.post('/domains', async (req, res) => {
+//     axios({
+//       url: "https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&marker=baby",
+//       method: "GET",
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+//       }
+//     }).then(response => {
+//         // res.status(200).json(response.data);
+//         // var res = response.data;
+//         var domainResponse = response.data;
+//       }).then((res) =>{
+//         domainResponse.map((domain) => {
+//         axios.get('https://api.ote-godaddy.com/v1/domains/available?domain=facebookei.com&checkType=FULL&forTransfer=false',
+//         {
+//          headers: {
+//              'Content-Type': `application/json`,
+//              'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+//          },
+//         }).then((res) => {
+//           console.log(res.data)
+//         })
+
+//         })
+//     }).catch((err) => {
+//         console.log(err)
+//         res.status(500).json({ message: err });
+//       });
+// })
+
 app.post('/domains', async (req, res) => {
-    axios({
-      url: "https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&limit=5&marker=baby",
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
-      }
-    })
-      .then(response => {
-        res.status(200).json(response.data);
+  const { keyword }  = req.body
+const response =  await  axios({
+    url: `https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&&limit=20&marker=${keyword}`,
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+    }
+  })
+  var sendResponse = [];
+  var mapResponse = response.data;
+  // console.log(mapResponse[0],'mapResponsemapResponsemapResponsemapResponse');
+  // const realResponse =  mapResponse.map( async(resp) => {
+  //    const r = await axios.get(`https://api.ote-godaddy.com/v1/domains/available?domain=${resp.domain}&checkType=FULL&forTransfer=false`,
+  //     {
+  //      headers: {
+  //          'Content-Type': `application/json`,
+  //          'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+  //      },
+  //     })
+      // sendResponse = {...resp, ...r.data};
+      // return {...resp, ...r.data};
+  // })
+  // const realResponse1 = await axios.get('https://api.ote-godaddy.com/v1/domains/available?domain=facebookei.com&checkType=FULL&forTransfer=false',
+  //     {
+  //      headers: {
+  //          'Content-Type': `application/json`,
+  //          'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+  //      },
+  //     })
+
+      const promises = mapResponse.map(resp => axios.get(`https://api.ote-godaddy.com/v1/domains/available?domain=${resp.domain}&checkType=FULL&forTransfer=false`,
+      {
+             headers: {
+                 'Content-Type': `application/json`,
+                 'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+             },
+            }
+        ));
+
+        Promise.all(promises)
+        .then(function(values) {
+            var mainData =[];
+            // console.log(values[0].data,'valuesvaluesvaluesvaluesvalues');
+            const data = values.map((v) => v.data)
+            // console.log(data,'datadatadatadatadatadatadata')
+            mainData = data;
+            var sendData = mainData.filter((main) => main .available != false);
+            res.status(200).json({data: sendData});
+        })
+        .catch(err => {
+            console.error(err);
+        }); 
+      // console.log(realResponse, 'trdkogkrogkor')
+      // const results = await realResponse;
+      // console.log(results,'resultsresultsresultsresults')
       })
-      .catch((err) => {
-        console.log(err)
-        res.status(500).json({ message: err });
-      });
-})
+
+
 app.get('/domains', async (req, res) => {
     axios({
       url: "https://api.ote-godaddy.com/v1/domains?statusGroups=INACTIVE&limit=5&marker=baby",
