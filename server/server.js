@@ -30,7 +30,7 @@ app.post('/', async (req, res) => {
   try {
     const prompt = req.body.prompt;
 
-    // const response = await openai.createCompletion({
+    const response = await openai.createCompletion({
     //   model: "text-davinci-003",
     //   prompt: `${prompt}`,
     //   temperature: 1, // Higher values means the model will take more risks.
@@ -40,17 +40,17 @@ app.post('/', async (req, res) => {
     //   presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
     // });
 
-    //   model: "text-davinci-003",
-    //   prompt: `${prompt}`,
-    //   temperature: 0.5,
-    //   max_tokens: 60,
-    //   top_p: 1.0,
-    //   frequency_penalty: 0.8,
-    //   presence_penalty: 0.0,
-    // });
+      model: "text-davinci-003",
+      prompt: `${prompt}`,
+      temperature: 0.5,
+      max_tokens: 60,
+      top_p: 1.0,
+      frequency_penalty: 0.8,
+      presence_penalty: 0.0,
+    });
 
     res.status(200).send({
-      keyword: 'response.data.choices[0].text'
+      keyword: response.data.choices[0].text
     });
 
       // res.status(200).send({
@@ -74,12 +74,12 @@ res.status(200).send({name: name, email: email, dp: picture});
 })
 app.post('/logo', async (req, res) => {
   try {
-    // const response = await openai.createImage({
-    //   prompt: req.body.logo + "logo",
-    //   n: 5,
-    //   size: "256x256",
-    // });
-      res.status(200).send({image:'response.data'})
+    const response = await openai.createImage({
+      prompt: req.body.logo + "logo",
+      n: 5,
+      size: "256x256",
+    });
+      res.status(200).send({image: response.data})
     // const logo = req.body;
     // res.status(200).send({
     //   images: path.join("images" +"/baby_care.jpg")

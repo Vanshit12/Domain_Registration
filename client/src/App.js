@@ -75,7 +75,7 @@ const handleSubmit = async (e) => {
         setKeyword(filter);
         response = filter;
       }).then((res) =>{
-          axios.post('http://localhost:5000/logo', JSON.stringify({logo: 'response'}),
+          axios.post('http://localhost:5000/logo', JSON.stringify({logo: response[0]}),
           {
            headers: {
                'Content-Type': `application/json`,
@@ -142,6 +142,9 @@ const logout = () => {
         </Button>
         </Form.Group>       
       </Form>
+    { (keyword && domains && images && domains.length > 0 && images.length > 0 ) &&
+      ( keyword && domains.length > 0 && images.length > 0 ) ?      
+    <>
      {
       keyword && 
       <ListGroup as="ol" numbered horizontal style={{display: 'flex', justifyContent: 'center'}}>          
@@ -155,9 +158,8 @@ const logout = () => {
         }
         </ListGroup>
      }
-    { console.log(images)}
-    { (images && images.length > 0 && images !== null && images != '') &&
-        (images && images.length > 0 )  ?
+     {
+     (images && images.length > 0 && images !== null && images != '') &&
         <Row lg={5} style={{margin : '15px'}}>
       {
       images.map((img,i) => {
@@ -170,17 +172,8 @@ const logout = () => {
         )
       })
     }
-      </Row> :
-      
-        (loader !== false) && 
-        <>
-          <div style={{display: 'flex', justifyContent: 'center'}}>Great We are finding the best logos for your website</div>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <Spinner animation="border" />
-        </div>
-        </>
-    }
-
+      </Row> 
+      }
     {
       (domains && domains.length > 0) && 
         
@@ -208,6 +201,16 @@ const logout = () => {
         }
       </tbody>
           </Table>
+    } 
+    </> : 
+    
+    (loader !== false) && 
+        <>
+          <div style={{display: 'flex', justifyContent: 'center'}}>Great We are finding the best logos for your website</div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <Spinner animation="border" />
+        </div>
+        </>  
     }
     {/* <GoogleLogin
       clientId={"474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"}
