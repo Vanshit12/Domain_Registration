@@ -7,12 +7,13 @@ import {Card, Col, Row, Table, Form, Button, ListGroup, Spinner} from 'react-boo
 function App() {
 
   var form
-  var chatContainer
-  let loadInterval  
   const [keyword, setKeyword] = useState('');
   const [images, setImages] = useState([]);
   const [domains, setDomains] = useState('');
   const [loader , setLoader] = useState(false);
+  const [radioWord, setRadioWord] = useState();
+  const [textWord, setTextWord] = useState();
+  const [domainWord, setDomainWord] = useState('word');
   useEffect(() => {
     var Id = "474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
 
@@ -22,36 +23,11 @@ function App() {
     })
 
     form = document.querySelector('form')
-    // chatContainer = document.querySelector('#chat_container')
-    
-    form.addEventListener('submit', handleSubmit)
-
+    console.log(domainWord)
+    // form.addEventListener('submit', handleSubmit)
+    console.log(radioWord, textWord)
     },[]);
 
-
-function chatStripe(isAi, value) {
-  return (
-      `
-      <div class="wrapper ai">
-          <div class="chat">
-              <div class="message">Your Business Keyword is like "${value}".</div>
-          </div>
-      </div>
-  `
-  )
-}
-
-function showLogo(value) {
-  return (
-      `
-      <div class="wrappe a">
-          <div class="cha">
-              <img src="${value}" />
-          </div>
-      </div>
-  `
-  )
-}
 const handleSubmit = async (e) => {
   e.preventDefault();
   const data = new FormData(form)
@@ -61,6 +37,7 @@ const handleSubmit = async (e) => {
   form.reset()
 
   var response
+  var string
   axios.post('http://localhost:5000/',JSON.stringify({
               prompt: 'Extract keywords from this text:\n\n' + data.get('prompt')
           }),
@@ -69,13 +46,13 @@ const handleSubmit = async (e) => {
               'Content-Type': `application/json`,
           }}
       ).then( (res) => {
-        const string = res.data.keyword.replace(/[^a-zA-Z]/g, ' ');
+        string = res.data.keyword.replace(/[^a-zA-Z]/g, ' ');
         const newString = string.split(' ');
         const filter = newString.filter((s) => s !== "")
         setKeyword(filter);
         response = filter;
       }).then((res) =>{
-          axios.post('http://localhost:5000/logo', JSON.stringify({logo: response[0]}),
+          axios.post('http://localhost:5000/logo', JSON.stringify({logo: string}),
           {
            headers: {
                'Content-Type': `application/json`,
@@ -84,16 +61,17 @@ const handleSubmit = async (e) => {
           .then((res) => {
             setImages(res.data.image.data);
         })
-      }).then((res) =>{
-        axios.post('http://localhost:5000/domains', JSON.stringify({keyword: response[0]}),
-        {
-         headers: {
-             'Content-Type': `application/json`,
-         },
-        }).then((res) => {
-          setDomains(res.data.data)
-        })
-    })
+      })
+    //   .then((res) =>{
+    //     axios.post('http://localhost:5000/domains', JSON.stringify({keyword: response[0]}),
+    //     {
+    //      headers: {
+    //          'Content-Type': `application/json`,
+    //      },
+    //     }).then((res) => {
+    //       setDomains(res.data.data)
+    //     })
+    // })
 }
 
 const validate = (e) => {
@@ -103,6 +81,31 @@ const validate = (e) => {
     if (words.length> 10) {
       alert('Please Describe your business in less than 10 words');
     }
+}
+
+const handleDomain = async (e) => {
+  e.preventDefault();
+  console.log(radioWord, textWord)
+  if(radioWord){
+    axios.post('http://localhost:5000/domains', JSON.stringify({keyword: radioWord}),
+    {
+      headers: {
+        'Content-Type': `application/json`,
+      },
+    }).then((res) => {
+      setDomains(res.data.data)
+    })
+  }else if(textWord){
+    
+    axios.post('http://localhost:5000/domains', JSON.stringify({keyword: textWord}),
+    {
+      headers: {
+        'Content-Type': `application/json`,
+      },
+    }).then((res) => {
+      setDomains(res.data.data)
+    })
+  }
 }
 
 const handleLogin = async (googleData) => {
@@ -134,30 +137,17 @@ const logout = () => {
     </form> */}
     {/* <div id="chat_container"></div>
      */}
-     <Form>
+     <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="prompt" style={{ margin: '15px', display: 'flex', justifyContent: 'center' }}>
           <Form.Control type="text" name="prompt" style={{margin : '15px', width: '50%'}} onChange={(e) => validate(e)} placeholder="Please Describe your business in less than 10 words" />
-        <Button variant="primary" style={{marginTop: '15px', height: '40px'}} type="submit">
+        <Button onClick={handleSubmit} variant="primary" style={{marginTop: '15px', height: '40px'}} type="submit">
           Submit
         </Button>
         </Form.Group>       
       </Form>
-    { (keyword && domains && images && domains.length > 0 && images.length > 0 ) &&
-      ( keyword && domains.length > 0 && images.length > 0 ) ?      
+    { (keyword  && images &&  images.length > 0 ) &&
+      ( keyword  && images.length > 0 ) ?      
     <>
-     {
-      keyword && 
-      <ListGroup as="ol" numbered horizontal style={{display: 'flex', justifyContent: 'center'}}>          
-      { 
-      keyword.map((f) => {
-        return (
-          // <div>{f}</div>
-          <ListGroup.Item as="li">{f}</ListGroup.Item>
-          )
-        })
-        }
-        </ListGroup>
-     }
      {
      (images && images.length > 0 && images !== null && images != '') &&
         <Row lg={5} style={{margin : '15px'}}>
@@ -173,7 +163,103 @@ const logout = () => {
       })
     }
       </Row> 
-      }
+    }
+    {
+      keyword && 
+      <ListGroup as="ol" numbered horizontal style={{display: 'flex', marginBottom: '15px', justifyContent: 'center'}}>          
+      { 
+      keyword.map((word) => {
+        return (
+          <ListGroup.Item as="li">{word}</ListGroup.Item>
+          )
+        })
+        }
+        </ListGroup>
+     }
+     
+    {
+      keyword && 
+      <Form onSubmit={handleDomain} style={{marginBottom: '15px', justifyContent: 'center'}}>
+      {/* <Row lg={10}> */}
+        <Form.Label htmlFor="keyword" style={{display: 'flex', justifyContent: 'center'}}>Please choose any One for which you want to create domain</Form.Label>
+      {/* </Row> */}
+      
+      {/* <Row lg={10}>
+      <Col lg={6}> */}
+      <Form.Group style={{display: 'flex', justifyContent: 'center', margin: '15px', whiteSpace: 'noWrap' }}>
+      <Form.Check
+            label="By Keyword"
+            name="word"
+            type="radio"
+            value="word"
+            onClick={(e) => {setDomainWord(e.target.value); setTextWord('')}}
+            selected={domainWord == 'word'  ? true : false}
+            />
+            
+          <Form.Label htmlFor="keyword" style={{marginRight: '15px'}}>Or</Form.Label>
+          <Form.Check
+          label="By Text"
+          name="word"
+          type="radio"
+          value="text"
+          onClick={(e) => {setDomainWord(e.target.value); setRadioWord('')}}
+          />      
+      </Form.Group>
+          {/* </Col> */}
+      {/* </Row> */}
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+      {/* <Row >   */}
+      <Form.Group className="mb-3" style={{display: 'flex', marginRight: '10px'}} >  
+       { 
+      keyword.map((word,i) => {
+        return (
+          <Form.Check
+            label={word}
+            name="radioword"
+            type="radio"
+            value={word}
+            disabled={domainWord == 'text' ? true : false}
+            onChange={(e) => setRadioWord(e.target.value)}
+            />
+            )
+          })
+        }
+        {/* <Form.Label htmlFor="keyword">Password</Form.Label> */}
+        </Form.Group>
+        {/* </Row> */}
+        {/* <Row > */}
+        <Form.Group className="mb-3" lg="6" style={{display: 'flex', margin: '10px'}}>
+        <Form.Control
+          type="text"
+          name="textword"
+          id="textword"
+          placeholder="Please Enter the word for domain name"
+          disabled={domainWord == 'word' ? true : false}
+          onChange={(e) => setTextWord(e.target.value)}
+          style={{width: '400px'}}
+          />
+        </Form.Group>
+        </div>
+          {/* </Row> */}
+          {/* <Row> */}
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+        <Button onClick={handleDomain} variant="primary" style={{marginTop: '15px', height: '40px', display: 'flex', justifyContent: 'center'}}>
+          Submit
+        </Button>
+          </div>
+            {/* </Row>   */}
+        </Form>
+     }
+    </> : 
+        
+        (loader !== false) && 
+            <>
+              <div style={{display: 'flex', justifyContent: 'center'}}>Great We are finding the best logos for your website</div>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Spinner animation="border" />
+            </div>
+            </>  
+    }
     {
       (domains && domains.length > 0) && 
         
@@ -202,16 +288,7 @@ const logout = () => {
       </tbody>
           </Table>
     } 
-    </> : 
     
-    (loader !== false) && 
-        <>
-          <div style={{display: 'flex', justifyContent: 'center'}}>Great We are finding the best logos for your website</div>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <Spinner animation="border" />
-        </div>
-        </>  
-    }
     {/* <GoogleLogin
       clientId={"474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"}
       buttonText="Log in with Google"

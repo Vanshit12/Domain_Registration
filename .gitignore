@@ -1,6 +1,11 @@
 node_modules
 client/node_modules
 server/node_modules
+env
+client/env
+server/env
+dotenv
+client/dotenv
+server/dotenv
 .env
-client/.env
-server/.env
+/.env
