@@ -3,3 +3,40 @@
 .form-check-label {
   margin-right: 15px;
 }
+
+.selected  {
+  border: 5px solid red !important;
+}
+
+.card:hover {
+    cursor: pointer;
+    transform: translateY(10px); 
+}
+
+input[type="radio"]{
+  visibility: hidden;
+  height: 0;
+  width: 0;
+}
+
+input[type="radio"]:checked + label{
+  background-color: #58ba83;
+}
+
+label {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+  background-color: #454545;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: all .3s ease-out;
+}
+
+td div input[type="radio"] {
+  visibility: visible;
+  height: 15px;
+  width: 15px;
+}

@@ -75,7 +75,7 @@ res.status(200).send({name: name, email: email, dp: picture});
 app.post('/logo', async (req, res) => {
   try {
     const response = await openai.createImage({
-      prompt: req.body.logo + "logo",
+      prompt: req.body.logo,
       n: 1,
       size: "256x256",
     });
@@ -128,7 +128,7 @@ const response =  await  axios({
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+      'Authorization': 'sso-key 3mM44UcgmcnFZ6_YSazq1Fdvnrmvc8bAX6Pzs:MvnzULubQPYE5TftGSgkxy'
     }
   })
   var sendResponse = [];
@@ -157,7 +157,7 @@ const response =  await  axios({
       {
              headers: {
                  'Content-Type': `application/json`,
-                 'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+                 'Authorization': 'sso-key 3mM44UcgmcnFZ6_YSazq1Fdvnrmvc8bAX6Pzs:MvnzULubQPYE5TftGSgkxy'
              },
             }
         ));
@@ -187,7 +187,7 @@ app.get('/domains', async (req, res) => {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'sso-key UzQxLikm_46KxDFnbjN7cQjmw6wocia:46L26ydpkwMaKZV6uVdDWe'
+        'Authorization': 'sso-key 3mM44UcgmcnFZ6_QAXGWihisWtsH3ihrMm71v:2CGjnCYAESzpUcEfWgFcVQ'
       }
     })
       .then(response => {
