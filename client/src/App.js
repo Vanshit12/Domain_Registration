@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Router from './Router'
+import Context from './Context'
 import axios from 'axios';
+import Header from './Header'
 import {GoogleLogin, GoogleLogout} from 'react-google-login';
 import {gapi} from 'gapi-script';
 import {Card, Col, Row, Table, Form, Button, ListGroup, Spinner} from 'react-bootstrap';
@@ -8,7 +10,9 @@ import {Card, Col, Row, Table, Form, Button, ListGroup, Spinner} from 'react-boo
 function App() {
   return (
     <div className="App">
-      <Router />
+      <Context>
+        <Router />
+      </Context>
     </div>
   );
 //   var form

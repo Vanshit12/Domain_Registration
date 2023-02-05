@@ -3,15 +3,11 @@ import axios from 'axios';
 import {GoogleLogin, GoogleLogout} from 'react-google-login';
 import {gapi} from 'gapi-script';
 import {Card, Col, Row, Table, Form, Button, ListGroup, Spinner} from 'react-bootstrap';
-import { AuthState } from './Context';
 
 export const Home = () => {
 
     var form
-    const {state : {authUser, user_info }, dispatch} = AuthState();
-
     const [keyword, setKeyword] = useState('');
-    const [prompt, setPrompt] = useState('');
     const [images, setImages] = useState([]);
     const [domains, setDomains] = useState('');
     const [loader , setLoader] = useState(false);
@@ -27,8 +23,7 @@ export const Home = () => {
   
         gapi.auth2.init({clientId: Id})
       })
-      console.log(authUser, 'authUser')
-      console.log(user_info, 'user_info')
+  
       form = document.querySelector('form')
       console.log(domainWord)
       // form.addEventListener('submit', handleSubmit)
@@ -44,39 +39,33 @@ export const Home = () => {
     
     // to clear the textarea input 
     // form.reset()
-    let id = document.getElementById("prompt")
-    setPrompt(id.value)
+    const id = document.getElementById("prompt")
+    console.log(id.value)
+  
     var response
     var string
     axios.post('http://localhost:5000/',JSON.stringify({
-                prompt: 'Suggest a business name for a company that:\n\n' + id.value
+                prompt: 'Extract keywords from this text:\n\n' + id.value
             }),
            {
             headers: {
                 'Content-Type': `application/json`,
             }}
         ).then( (res) => {
-          // string = res.data.keyword.replace(/[^a-zA-Z]/g, ' ');
-          // const newString = string.split(' ');
-          // const filter = newString.filter((s) => s !== "")
-          response = res.data.keyword.map((key,i) => {
-            return key.text;
-          })
-          setKeyword(response);
-          response = res.data.keyword;
+          string = res.data.keyword.replace(/[^a-zA-Z]/g, ' ');
+          const newString = string.split(' ');
+          const filter = newString.filter((s) => s !== "")
+          setKeyword(filter);
+          response = filter;
         }).then((res) =>{
-            axios.post('http://localhost:5000/logo', JSON.stringify({logo: id.value + " logo"}),
+            axios.post('http://localhost:5000/logo', JSON.stringify({logo: string + " logo"}),
             {
              headers: {
                  'Content-Type': `application/json`,
              }}
             )
             .then((res) => {
-              setImages(res.data.image.data);      
-              var text = document.getElementById('textPrompt')
-              text.innerHTML = `Last Search: ${id.value}`;
-              console.log(text, id.value, 'ide.value')
-              id.value = "";
+              setImages(res.data.image.data);
           })
         })
       //   .then((res) =>{
@@ -89,6 +78,7 @@ export const Home = () => {
       //       setDomains(res.data.data)
       //     })
       // })
+      id.value = "";
   }
   
   const validate = (e) => {
@@ -181,7 +171,6 @@ export const Home = () => {
           </Button>
           </Form.Group>       
         </Form>
-        <div id="textPrompt" style={{display: 'flex', justifyContent:'center'}}></div>
       { (keyword  && images &&  images.length > 0 ) &&
         ( keyword  && images.length > 0 ) ?      
       <>
