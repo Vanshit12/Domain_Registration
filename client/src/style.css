@@ -40,3 +40,8 @@ td div input[type="radio"] {
   height: 15px;
   width: 15px;
 }
+
+.alignCenter > * {
+  display: flex;
+  justify-content: center; 
+}
