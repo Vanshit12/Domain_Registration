@@ -12,8 +12,8 @@ export const Router = () => {
 
    return (
     <div className="page">
-        <Header />
         <BrowserRouter>
+        <Header />
             <Routes onUpdate={() => window.scrollTo(0, 0)}>
                 <Route path="/" element={<Home />} />
                 <Route path="/templates" element={<Template />} />

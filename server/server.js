@@ -10,7 +10,7 @@ dotenv.config()
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
-var client = new OAuth2Client("474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com")
+var client = new OAuth2Client("705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com")
 
 const openai = new OpenAIApi(configuration);
 

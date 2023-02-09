@@ -11,6 +11,7 @@
 .card:hover {
     cursor: pointer;
     transform: translateY(10px); 
+    transition: all .3s ease-out;
 }
 
 input[type="radio"]{
@@ -44,4 +45,16 @@ td div input[type="radio"] {
 .alignCenter > * {
   display: flex;
   justify-content: center; 
+}
+
+.button {
+  opacity: 0;
+}
+
+.card:hover .button {
+    opacity: 1;
+  }
+  
+.card:hover img {
+  filter: brightness(0.5);
 }

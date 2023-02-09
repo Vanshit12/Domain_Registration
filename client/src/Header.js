@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Container, Card, Col, Row, Button,Nav  } from 'react-bootstrap';
-import {Link, Navigate, to} from 'react-router-dom';
+import {Link, Navigate, NavLink} from 'react-router-dom';
 import {GoogleLogin, GoogleLogout} from 'react-google-login';
 import {gapi} from 'gapi-script';
 import { AuthState } from './Context';
@@ -13,7 +13,7 @@ export const Header = () => {
     const [token, setToken] = useState('');
     const [profile, setProfile] = useState('');
     useEffect(() => {
-        var Id = "474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
+        var Id = "705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"
     
         gapi.load('client:auth2',()=> {    
             gapi.auth2.init({clientId: Id})
@@ -33,8 +33,8 @@ export const Header = () => {
         // dispatch("LOGOUT")
         dispatch({type:'LOGOUT'});
 
-        // localStorage.removeItem('access_token')
-        // localStorage.removeItem('profile')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('profile')
         // setToken('')
         // setProfile('')
         // navigate('/login')
@@ -44,21 +44,36 @@ export const Header = () => {
         <>
         <Container xl={12} style={{justifyContent: 'center', marginTop: '20px'}}>
             <Row>
-                <Col xl={12}>
-                    <Nav  as="ul">
-                        
-                        
+            <Col xl={6} style={{display: 'flex'}}>
+                <>
+                <Nav.Item style={{margin: '0px 20px'}}>
+                    <NavLink to="/">Home</NavLink>
+                </Nav.Item>
+                <Nav.Item style={{margin: '0px 20px'}}>
+                    <NavLink to="/pricing">Pricing</NavLink>
+                </Nav.Item>
+                <Nav.Item style={{margin: '0px 20px'}}>
+                    <NavLink to="/templates">Templates</NavLink>
+                </Nav.Item>
+                </>
+            </Col>
+                <Col xl={6}>
+                    <Nav style={{display: 'flex', justifyContent: 'center' }}>
                         {
                             (authUser && user_info != '') ?
                             <>
-                        <Nav.Item as="li">
-                            <p>Welcome {JSON.parse(user_info).name}</p>
-                            {console.log(JSON.parse(user_info).name)}
+                        <Nav.Item>
+                            <div style={{display: 'flex', justifyContent: 'center' }}>
+                            <p style={{margin: '0px 20px'}}>Welcome {user_info.name}</p>
                             <Button onClick={logOut}>Log out</Button>
+                            </div>
                         </Nav.Item>
                             </> :
-                        <Nav.Item as="li">
-                            <Nav.Link href="/login">Log in</Nav.Link>
+                        <Nav.Item>
+                            
+                            <div>                            
+                                <NavLink to="/login">Log in</NavLink>
+                            </div>
                         </Nav.Item>
                         }
                     </Nav>      

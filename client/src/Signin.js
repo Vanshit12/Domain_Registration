@@ -9,7 +9,7 @@ export const Signin = () => {
     const navigate = useNavigate();
     const {state : {authUser, user_info }, dispatch} = AuthState();
     useEffect(() => {
-        var Id = "474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
+        var Id = "705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"
     
         gapi.load('client:auth2',()=> {    
             gapi.auth2.init({clientId: Id})
@@ -38,9 +38,11 @@ export const Signin = () => {
 
         const data = await res.json()
         console.log(data)
+        localStorage.setItem('access_token', googleData.accessToken)
+        localStorage.setItem('user_info', JSON.stringify(googleData.profileObj))
         dispatch({type:'LOGIN',payload:googleData.accessToken});
-        dispatch({type:'PROFILE',payload:JSON.stringify(googleData.profileObj)});
-        navigate(-1)
+        dispatch({type:'PROFILE',payload:googleData.profileObj});
+        navigate('/')
       }
     
     const handleError = async (err) => {
@@ -49,9 +51,9 @@ export const Signin = () => {
 
     return(
         <>
-        <Container xl={12} style={{justifyContent: 'center', marginTop: '20px'}}>
+        <Container xl={12} style={{position: 'absolute', top: '40%', left:'40%'}}>
         <GoogleLogin
-            clientId={"474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"}
+            clientId={"705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"}
             buttonText="Log in with Google"
             onSuccess={handleLogin}
             onFailure={handleError}

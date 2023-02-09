@@ -17,7 +17,7 @@ export const Home = () => {
     const [active, setActive] = useState();
     const [domainWord, setDomainWord] = useState('');
     useEffect(() => {
-      var Id = "474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
+      var Id = "http://705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"
   
       gapi.load('client:auth2',()=> {
   
@@ -351,7 +351,7 @@ export const Home = () => {
       } 
       
       {/* <GoogleLogin
-        clientId={"474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"}
+        clientId={"705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"}
         buttonText="Log in with Google"
         onSuccess={handleLogin}
         onFailure={handleError}
@@ -359,7 +359,7 @@ export const Home = () => {
         prompt={'select_account'}
       />
       <GoogleLogout
-        clientId="474219718041-s78lnljsije24b19fk8oafe9jvtg8s7m.apps.googleusercontent.com"
+        clientId="705312850932-flpf5bhoj8gaads1u6squftulqp43m68.apps.googleusercontent.com"
         buttonText="Logout"
         onLogoutSuccess={logout}
         isSignedIn={false}
